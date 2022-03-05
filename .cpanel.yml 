@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/dentrice/public_html/new
+    - /bin/cp -R images $DEPLOYPATH

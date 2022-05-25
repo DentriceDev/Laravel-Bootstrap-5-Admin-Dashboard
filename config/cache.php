@@ -27,7 +27,7 @@ return [
     | same cache driver to group types of items stored in your caches.
     |
     | Supported drivers: "apc", "array", "database", "file",
-    |         "memcached", "redis", "dynamodb", "octane", "null"
+    |            "memcached", "redis", "dynamodb", "null"
     |
     */
 
@@ -88,10 +88,6 @@ return [
             'endpoint' => env('DYNAMODB_ENDPOINT'),
         ],
 
-        'octane' => [
-            'driver' => 'octane',
-        ],
-
     ],
 
     /*
@@ -105,6 +101,6 @@ return [
     |
     */
 
-    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache_'),
+    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
 
 ];

@@ -24,6 +24,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/css/perfect-scrollbar.min.css" rel="stylesheet" />
   <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
+  @livewireStyles
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -76,11 +77,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  
+
   <!-- Plugin for the charts, full documentation here: https://www.chartjs.org/ -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.0.2/chart.min.js"></script>
   {{-- <script src="{{ asset('js/Chart.extension.js') }}"></script> --}}
-  
+
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{{ asset('js/soft-ui-dashboard.min.js') }}"></script>
 
@@ -216,6 +217,7 @@ $.fn.dataTable.ext.classes.sPageButton = '';
 
   </script>
   @yield('scripts')
+  @livewireScripts
 </body>
 
 </html>

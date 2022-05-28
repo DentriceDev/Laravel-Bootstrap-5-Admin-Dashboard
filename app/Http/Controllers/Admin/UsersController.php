@@ -9,7 +9,6 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\User;
 use Gate;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class UsersController extends Controller
@@ -37,7 +36,7 @@ class UsersController extends Controller
         $user = User::create($request->all());
         $user->roles()->sync($request->input('roles', []));
 
-        return redirect()->route('admin.users.index');
+        return redirect()->route('users.index')->with('message', __('global.create_account_success'));
     }
 
     public function edit(User $user)
@@ -56,7 +55,7 @@ class UsersController extends Controller
         $user->update($request->all());
         $user->roles()->sync($request->input('roles', []));
 
-        return redirect()->route('admin.users.index');
+        return redirect()->route('users.index')->with('message', __('global.update_profile_success'));
     }
 
     public function show(User $user)
@@ -74,7 +73,7 @@ class UsersController extends Controller
 
         $user->delete();
 
-        return back();
+        return back()->with('message', __('global.delete_account_success'));
     }
 
     public function massDestroy(MassDestroyUserRequest $request)

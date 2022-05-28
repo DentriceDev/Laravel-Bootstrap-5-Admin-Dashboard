@@ -9,26 +9,26 @@
     <div class="collapse navbar-collapse  w-auto  max-height-vh-100 h-100" id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link {{ request()->is("admin") ? "active" : "" }}" href="{{ route("admin.home") }}">
+          <a class="nav-link {{ request()->is("dashboard") ? "active" : "" }}" href="{{ route("dashboard") }}">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-primary text-center me-2 d-flex align-items-center justify-content-center">
               <i class="fas fa-fw fa-tachometer-alt"></i>
             </div>
             <span class="nav-link-text ms-1">{{ trans('global.dashboard') }}</span>
           </a>
         </li>
-        @if(file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))
-            @can('profile_password_edit')
+        @if(file_exists(app_path('Http/Controllers/Auth/ManageAccountController.php')))
+            @can('profile_edit')
                 <li class="nav-item">
-                <a class="nav-link {{ request()->is('profile/password') || request()->is('profile/password/*') ? 'active' : '' }}" href="{{ route('profile.password.edit') }}">
+                <a class="nav-link {{ request()->is('user/account') || request()->is('user/account/*') ? 'active' : '' }}" href="{{ route('user.account.edit') }}">
                     <div class="icon icon-shape icon-sm shadow border-radius-md bg-primary text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-fw fas fa-key c-sidebar-nav-icon"></i>
                     </div>
-                    <span class="nav-link-text ms-1">{{ trans('global.change_password') }}</span>
+                    <span class="nav-link-text ms-1">{{ trans('global.my_profile') }}</span>
                 </a>
                 </li>
             @endcan
         @endif
-        
+
         <li class="nav-item">
           <a class="nav-link  " href="#" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-primary text-center me-2 d-flex align-items-center justify-content-center">
@@ -44,7 +44,7 @@
           </li>
           @can('permission_access')
             <li class="nav-item">
-              <a href="{{ route("admin.permissions.index") }}" class="nav-link {{ request()->is("admin/permissions") || request()->is("admin/permissions/*") ? "active" : "" }}">
+              <a href="{{ route("permissions.index") }}" class="nav-link {{ request()->is("permissions") || request()->is("permissions/*") ? "active" : "" }}">
                 <div class="icon icon-shape icon-sm shadow border-radius-md bg-primary text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="fa-fw fas fa-unlock-alt c-sidebar-nav-icon"></i>
                 </div>
@@ -54,7 +54,7 @@
           @endcan
           @can('role_access')
             <li class="nav-item">
-              <a href="{{ route("admin.roles.index") }}" class="nav-link {{ request()->is("admin/roles") || request()->is("admin/roles/*") ? "active" : "" }}">
+              <a href="{{ route("roles.index") }}" class="nav-link {{ request()->is("roles") || request()->is("roles/*") ? "active" : "" }}">
                 <div class="icon icon-shape icon-sm shadow border-radius-md bg-primary text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="fa-fw fas fa-briefcase c-sidebar-nav-icon"></i>
                 </div>
@@ -64,7 +64,7 @@
           @endcan
           @can('user_access')
             <li class="nav-item">
-              <a href="{{ route("admin.users.index") }}" class="nav-link {{ request()->is("admin/users") || request()->is("admin/users/*") ? "active" : "" }}">
+              <a href="{{ route("users.index") }}" class="nav-link {{ request()->is("users") || request()->is("users/*") ? "active" : "" }}">
                 <div class="icon icon-shape icon-sm shadow border-radius-md bg-primary text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="fa-fw fas fa-user c-sidebar-nav-icon"></i>
                 </div>

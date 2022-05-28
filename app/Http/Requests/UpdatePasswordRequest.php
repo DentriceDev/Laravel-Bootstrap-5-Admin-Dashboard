@@ -16,7 +16,7 @@ class UpdatePasswordRequest extends FormRequest
      */
     public function authorize()
     {
-        abort_if(Gate::denies('profile_password_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('profile_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return true;
     }

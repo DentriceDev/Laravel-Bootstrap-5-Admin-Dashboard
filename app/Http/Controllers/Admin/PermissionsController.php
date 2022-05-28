@@ -8,7 +8,6 @@ use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
 use App\Models\Permission;
 use Gate;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class PermissionsController extends Controller
@@ -33,7 +32,7 @@ class PermissionsController extends Controller
     {
         $permission = Permission::create($request->all());
 
-        return redirect()->route('admin.permissions.index');
+        return redirect()->route('permissions.index')->with('message', __('global.create_permission_success'));
     }
 
     public function edit(Permission $permission)
@@ -47,7 +46,7 @@ class PermissionsController extends Controller
     {
         $permission->update($request->all());
 
-        return redirect()->route('admin.permissions.index');
+        return redirect()->route('permissions.index')->with('message', __('global.update_permission_success'));
     }
 
     public function show(Permission $permission)
@@ -63,7 +62,7 @@ class PermissionsController extends Controller
 
         $permission->delete();
 
-        return back();
+        return back()->with('message', __('global.delete_permission_success'));
     }
 
     public function massDestroy(MassDestroyPermissionRequest $request)

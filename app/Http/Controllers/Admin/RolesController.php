@@ -9,7 +9,6 @@ use App\Http\Requests\UpdateRoleRequest;
 use App\Models\Permission;
 use App\Models\Role;
 use Gate;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class RolesController extends Controller
@@ -37,7 +36,7 @@ class RolesController extends Controller
         $role = Role::create($request->all());
         $role->permissions()->sync($request->input('permissions', []));
 
-        return redirect()->route('admin.roles.index');
+        return redirect()->route('roles.index')->with('message', __('global.create_role_success'));
     }
 
     public function edit(Role $role)
@@ -56,7 +55,7 @@ class RolesController extends Controller
         $role->update($request->all());
         $role->permissions()->sync($request->input('permissions', []));
 
-        return redirect()->route('admin.roles.index');
+        return redirect()->route('roles.index')->with('message', __('global.update_role_success'));
     }
 
     public function show(Role $role)
@@ -74,7 +73,7 @@ class RolesController extends Controller
 
         $role->delete();
 
-        return back();
+        return back()->with('message', __('global.delete_role_success'));
     }
 
     public function massDestroy(MassDestroyRoleRequest $request)

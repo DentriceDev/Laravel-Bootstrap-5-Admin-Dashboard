@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'site_title' => 'Soft UI BS5',
+    'site_title' => 'DentriceDev Solutions',
 ];

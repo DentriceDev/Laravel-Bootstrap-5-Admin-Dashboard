@@ -10,7 +10,7 @@
                     </li>
                 </ol>
                 <h6 class="font-weight-bolder mb-0 text-capitalize">
-                    {{ str_replace('.', ' >', Route::currentRouteName()) }}
+                    {{ str_replace('.', ' > ', Route::currentRouteName()) }}
                 </h6>
             </nav>
             <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4 d-flex justify-content-end" id="navbar">
@@ -41,10 +41,10 @@
                             <i class="fa-fw fas fa-user fa-lg c-sidebar-nav-icon"></i>
                         </a>
                         <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                            @if(file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))
-                            @can('profile_password_edit')
+                            @if(file_exists(app_path('Http/Controllers/Auth/ManageAccountController.php')))
+                            @can('profile_edit')
                             <li>
-                                <a class="dropdown-item border-radius-md {{ request()->is('profile/password') || request()->is('profile/password/*') ? 'active' : '' }}" href="{{ route('profile.password.edit') }}">
+                                <a class="dropdown-item border-radius-md {{ request()->is('user/account') || request()->is('user/account/*') ? 'active' : '' }}" href="{{ route('user.account.edit') }}">
                                     <div class="d-flex py-1">
                                         <div class="avatar avatar-sm bg-gradient-primary  me-3  my-auto">
                                             <i class="fa-fw fas fa-key c-sidebar-nav-icon"></i>

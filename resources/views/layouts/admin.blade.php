@@ -25,6 +25,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/css/perfect-scrollbar.min.css" rel="stylesheet" />
   <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
   @livewireStyles
+  @powerGridStyles
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -219,6 +220,7 @@ $.fn.dataTable.ext.classes.sPageButton = '';
   </script>
   @yield('scripts')
   @livewireScripts
+  @powerGridScripts
 </body>
 
 </html>

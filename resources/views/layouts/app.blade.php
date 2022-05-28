@@ -18,6 +18,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css" rel="stylesheet" />
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
     @livewireStyles
+    @powerGridStyles
     @yield('styles')
 </head>
 
@@ -37,6 +38,7 @@
     <script src="{{ asset('js/soft-ui-dashboard.min.js') }}"></script>
     @yield('scripts')
     @livewireScripts
+    @powerGridScripts
 </body>
 
 </html>

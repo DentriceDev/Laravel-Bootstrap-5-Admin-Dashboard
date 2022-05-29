@@ -17,8 +17,8 @@ class RolesTest extends DuskTestCase
         $admin = App\Models\User::find(1);
         $this->browse(function (Browser $browser) use ($admin) {
             $browser->loginAs($admin);
-            $browser->visit(route('admin.roles.index'));
-            $browser->assertRouteIs('admin.roles.index');
+            $browser->visit(route('roles.index'));
+            $browser->assertRouteIs('roles.index');
         });
     }
 }

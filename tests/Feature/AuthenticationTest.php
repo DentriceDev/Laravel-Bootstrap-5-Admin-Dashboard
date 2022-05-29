@@ -2,136 +2,169 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 class AuthenticationTest extends TestCase
 {
     // use RefreshDatabase;
+    // use WithoutMiddleware; // should not be used when testing with middleware with has $errors variable
+
+    public function withoutAuthorization()
+    {
+        \Gate::before(function () {
+            return true;
+        });
+
+        return $this;
+    }
 
     public function test_profile_routes_are_protected_from_public()
     {
-        // $response = $this->get('/user/account');
-        // $response->assertStatus(302);
-        // $response->assertRedirect('/login');
-
-        // $response = $this->put('/user/profile');
-        // $response->assertStatus(302);
-        // $response->assertRedirect('/login');
+        $response = $this->get('/user/account');
+        $response->assertStatus(302);
+        $response->assertRedirect('/login');
 
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->get('/user/account');
+        $response = $this->actingAs($user)->get('/dashboard');
         $response->assertOk();
     }
 
-    // public function test_profile_link_is_invisible_in_public()
-    // {
-    //     $response = $this->get('/');
-    //     $this->assertStringNotContainsString('href="/user/account"', $response->getContent());
+    public function test_profile_fields_are_visible()
+    {
+        $this->withoutAuthorization();
 
-    //     $user = User::factory()->create();
-    //     $response = $this->actingAs($user)->get('/');
-    //     $this->assertStringContainsString('href="/user/account"', $response->getContent());
-    // }
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->post('/password/confirm', [
+            'password' => 'password',
+        ]);
+        $response = $this->actingAs($user)->get('/user/account');
+        $this->assertStringContainsString('value="'.$user->name.'"', $response->getContent());
+        $this->assertStringContainsString('value="'.$user->email.'"', $response->getContent());
+    }
 
-    // public function test_profile_fields_are_visible()
-    // {
-    //     $user = User::factory()->create();
-    //     $response = $this->actingAs($user)->get('/user/account');
-    //     $this->assertStringContainsString('value="'.$user->name.'"', $response->getContent());
-    //     $this->assertStringContainsString('value="'.$user->email.'"', $response->getContent());
-    // }
+    public function test_profile_password_update_successful()
+    {
+        $this->withoutAuthorization();
 
-    // public function test_profile_name_email_update_successful()
-    // {
-    //     $user = User::factory()->create();
-    //     $newData = [
-    //         'name' => 'New name',
-    //         'email' => 'new@email.com'
-    //     ];
-    //     $this->actingAs($user)->put('/user/account', $newData);
-    //     $this->assertDatabaseHas('users', $newData);
+        $user = User::factory()->create([
+            'password' => Hash::make('password'),
+        ]);
+        $newData = [
+            'password' => 'newpassword',
+            'password_confirmation' => 'newpassword',
+        ];
+        $this->actingAs($user)->post('/password/confirm', [
+            'password' => 'password',
+        ]);
+        $this->actingAs($user)->post('/user/password', $newData);
 
-    //     // Check if the user is still able to log in - password unchanged
-    //     $this->assertTrue(Auth::attempt([
-    //         'email' => $user->email,
-    //         'password' => 'password'
-    //     ]));
-    // }
+        //Check if the user is able to log in with the new password
+        $this->assertTrue(Auth::attempt([
+            'email' => $user->email,
+            'password' => 'newpassword'
+        ]));
+    }
 
-    // public function test_profile_password_update_successful()
-    // {
-    //     $user = User::factory()->create();
-    //     $newData = [
-    //         'name' => 'New name',
-    //         'email' => 'new@email.com',
-    //         'password' => 'newpassword',
-    //         'password_confirmation' => 'newpassword'
-    //     ];
-    //     $this->actingAs($user)->put('/user/account', $newData);
+    public function test_profile_name_and_email_update_successful()
+    {
+        $this->withoutAuthorization();
+        $this->withOutExceptionHandling();
 
-    //     // Check if the user is able to log in with the new password
-    //     $this->assertTrue(Auth::attempt([
-    //         'email' => $user->email,
-    //         'password' => 'newpassword'
-    //     ]));
-    // }
+        $user = User::factory()->create([
+            'password' => Hash::make('password'),
+        ]);
+        $newData = [
+            'name' => 'New name',
+            'email' => 'new@email.com',
+        ];
+        $this->actingAs($user)->post('/password/confirm', [
+            'password' => 'password',
+        ]);
+        $this->actingAs($user)->post('/user/profile', $newData);
+        $this->assertDatabaseHas('users', $newData);
 
-    // public function test_email_can_be_verified()
-    // {
-    //     $newData = [
-    //         'name' => 'New name',
-    //         'email' => 'new@email.com',
-    //         'password' => 'newpassword',
-    //         'password_confirmation' => 'newpassword'
-    //     ];
-    //     $response = $this->post('/register', $newData);
-    //     $response->assertRedirect('/');
+        // Check if the user is still able to log in - password unchanged
+        $this->assertTrue(Auth::attempt([
+            'email' => $user->email,
+            'password' => 'password'
+        ]));
+        Auth::logout();
+    }
 
-    //     $response = $this->get('/secretpage');
-    //     $response->assertRedirect('/verify-email');
+    public function test_user_can_register()
+    {
+        $this->withoutAuthorization();
 
-    //     $user = User::factory()->create([
-    //         'email_verified_at' => null,
-    //     ]);
+        $newData = [
+            'name' => 'New name',
+            'email' => 'new1@email.com',
+            'password' => 'newpassword',
+            'password_confirmation' => 'newpassword'
+        ];
+        $response = $this->post('/register', $newData);
+        $response->assertRedirect('/dashboard');
+    }
 
-    //     Event::fake();
+    public function test_must_verify_email()
+    {
+        $this->withoutAuthorization();
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+        $this->actingAs($user)->get('/dashboard')->assertRedirect('/email/verify');
+    }
 
-    //     $verificationUrl = URL::temporarySignedRoute(
-    //         'verification.verify',
-    //         now()->addMinutes(60),
-    //         ['id' => $user->id, 'hash' => sha1($user->email)]
-    //     );
+    public function test_email_can_be_verified()
+    {
+        $this->withoutAuthorization();
 
-    //     $this->actingAs($user)->get($verificationUrl);
-    //     Event::assertDispatched(Verified::class);
-    //     $this->assertTrue($user->fresh()->hasVerifiedEmail());
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
 
-    //     $response = $this->get('/secretpage');
-    //     $response->assertOk();
-    // }
+        Event::fake();
 
-    // public function test_password_confirmation_page()
-    // {
-    //     $user = User::factory()->create();
-    //     $response = $this->actingAs($user)->get('/verysecretpage');
-    //     $response->assertRedirect('/confirm-password');
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $user->id, 'hash' => sha1($user->email)]
+        );
 
-    //     $response = $this->actingAs($user)->post('/confirm-password', [
-    //         'password' => 'password',
-    //     ]);
+        $this->actingAs($user)->get($verificationUrl);
+        Event::assertDispatched(Verified::class);
+        $this->assertTrue($user->fresh()->hasVerifiedEmail());
 
-    //     $response->assertRedirect();
-    //     $response->assertSessionHasNoErrors();
-    // }
+        $response = $this->actingAs($user)->post('/password/confirm', [
+            'password' => 'password',
+        ]);
+        $response = $this->get('/user/account');
+        $response->assertOk();
+    }
+
+    public function test_password_confirmation_page()
+    {
+        $this->withoutAuthorization();
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->get('/user/account');
+        $response->assertRedirect('/password/confirm');
+
+        $response = $this->actingAs($user)->post('/password/confirm', [
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+    }
 
     // public function test_password_at_least_one_uppercase_lowercase_letter()
     // {
@@ -155,4 +188,5 @@ class AuthenticationTest extends TestCase
     //         ]);
     //     $this->assertDatabaseHas('users', $user);
     // }
+
 }

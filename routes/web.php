@@ -29,7 +29,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'verified']], fun
     Route::resource('users', 'UsersController');
 });
 
-Route::group(['prefix' => 'user', 'as' => 'user.', 'namespace' => 'Auth', 'middleware' => ['auth', 'verified']], function () {
+Route::group(['prefix' => 'user', 'as' => 'user.', 'namespace' => 'Auth', 'middleware' => ['auth', 'verified', 'password.confirm']], function () {
     // Change password
     if (file_exists(app_path('Http/Controllers/Auth/ManageAccountController.php'))) {
         Route::get('account', 'ManageAccountController@edit')->name('account.edit');

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Verified;
@@ -14,12 +15,12 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 class AuthenticationTest extends TestCase
 {
-    // use RefreshDatabase;
+    use RefreshDatabase;
     // use WithoutMiddleware; // should not be used when testing with middleware with has $errors variable
 
     public function withoutAuthorization()
     {
-        \Gate::before(function () {
+        Gate::before(function () {
             return true;
         });
 
@@ -96,7 +97,6 @@ class AuthenticationTest extends TestCase
             'email' => $user->email,
             'password' => 'password'
         ]));
-        Auth::logout();
     }
 
     public function test_user_can_register()

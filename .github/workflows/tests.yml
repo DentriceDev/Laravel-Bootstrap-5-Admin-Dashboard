@@ -41,12 +41,3 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/phpunit
-
-    - name: Install Dusk for testing
-      run: php artisan dusk:install
-
-    - name: Execute Dusk Tests (Browser tests) via Dusk
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: php artisan dusk

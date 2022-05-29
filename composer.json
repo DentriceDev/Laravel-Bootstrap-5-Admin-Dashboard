@@ -19,8 +19,7 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "livewire/livewire": "^2.10",
-        "power-components/livewire-powergrid": "^3.0",
-        "yajra/laravel-datatables-oracle": "^9.11"
+        "power-components/livewire-powergrid": "^3.0"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^1.0",

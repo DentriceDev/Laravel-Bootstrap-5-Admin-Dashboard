@@ -13,6 +13,7 @@
                     {{ str_replace('.', ' > ', Route::currentRouteName()) }}
                 </h6>
             </nav>
+
             <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4 d-flex justify-content-end" id="navbar">
                 <div class="ms-md-3 pe-md-3 d-flex align-items-center">
                     <div class="input-group">
@@ -20,6 +21,7 @@
                         <input type="text" class="form-control" placeholder="Type here...">
                     </div>
                 </div>
+
                 <ul class="navbar-nav justify-content-end">
                     <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                         <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
@@ -28,11 +30,6 @@
                                 <i class="sidenav-toggler-line"></i>
                                 <i class="sidenav-toggler-line"></i>
                             </div>
-                        </a>
-                    </li>
-                    <li class="nav-item px-3 d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body p-0">
-                            <i class="fa fa-cog fa-lg fixed-plugin-button-nav cursor-pointer"></i>
                         </a>
                     </li>
 
@@ -59,6 +56,7 @@
                             </li>
                             @endcan
                             @endif
+
                             <li>
                                 <a class="dropdown-item border-radius-md" href="#" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
                                     <div class="d-flex py-1">

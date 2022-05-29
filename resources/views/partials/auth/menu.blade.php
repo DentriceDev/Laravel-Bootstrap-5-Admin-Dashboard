@@ -6,6 +6,7 @@
       </a>
     </div>
     <hr class="horizontal dark mt-0">
+
     <div class="collapse navbar-collapse  w-auto  max-height-vh-100 h-100" id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
@@ -16,6 +17,7 @@
             <span class="nav-link-text ms-1">{{ trans('global.dashboard') }}</span>
           </a>
         </li>
+
         @if(file_exists(app_path('Http/Controllers/Auth/ManageAccountController.php')))
             @can('profile_edit')
                 <li class="nav-item">
@@ -29,19 +31,11 @@
             @endcan
         @endif
 
-        <li class="nav-item">
-          <a class="nav-link  " href="#" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
-            <div class="icon icon-shape icon-sm shadow border-radius-md bg-primary text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="c-sidebar-nav-icon fas fa-fw fa-sign-out-alt"></i>
-            </div>
-            <span class="nav-link-text ms-1">{{ trans('global.logout') }}</span>
-          </a>
-        </li>
-
         @can('user_management_access')
           <li class="nav-item mt-3">
             <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">{{ trans('cruds.userManagement.title') }}</h6>
           </li>
+
           @can('permission_access')
             <li class="nav-item">
               <a href="{{ route("permissions.index") }}" class="nav-link {{ request()->is("permissions") || request()->is("permissions/*") ? "active" : "" }}">
@@ -52,6 +46,7 @@
               </a>
             </li>
           @endcan
+
           @can('role_access')
             <li class="nav-item">
               <a href="{{ route("roles.index") }}" class="nav-link {{ request()->is("roles") || request()->is("roles/*") ? "active" : "" }}">
@@ -62,6 +57,7 @@
               </a>
             </li>
           @endcan
+
           @can('user_access')
             <li class="nav-item">
               <a href="{{ route("users.index") }}" class="nav-link {{ request()->is("users") || request()->is("users/*") ? "active" : "" }}">

@@ -2,15 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Role;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\Role;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RolesTest extends TestCase
 {
     use RefreshDatabase;
-    use DatabaseMigrations;
 
     public function setUp(): void
     {
@@ -29,15 +27,12 @@ class RolesTest extends TestCase
         return $user;
     }
 
-    public function test_roles_routes_are_protected_from_public()
+    public function test_roles_routes_are_protected_from_unauthorized_access()
     {
         $this->get('/roles')->assertStatus(302)->assertRedirect('/login');
-    }
+        $this->withOutExceptionHandling();
 
-    public function test_roles_route_are_visible()
-    {
-        $this->loginAsAdmin()->assertRedirect('/dashboard');
-
+        $this->loginAsAdmin()->assertRedirect('/roles');
         $this->get('/roles')->assertStatus(200);
     }
 

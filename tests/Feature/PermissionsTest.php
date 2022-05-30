@@ -2,64 +2,61 @@
 
 namespace Tests\Feature;
 
-use App\Models\Permission;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Gate;
 use Tests\TestCase;
+use App\Models\Permission;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PermissionsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function withoutAuthorization()
+    public function setUp(): void
     {
-        Gate::before(function () {
-            return true;
-        });
+        parent::setUp();
 
-        return $this;
+        $this->artisan('db:seed');
     }
 
-    public function test_permissions_are_protected_from_public()
+    protected function loginAsAdmin()
     {
-        $response = $this->get('/permissions');
-        $response->assertStatus(302);
-        $response->assertRedirect('/login');
+        $user = $this->from('/login')->post('/login', [
+            'email' => 'admin@dentricedev.com',
+            'password' => '1234',
+        ]);
+
+        return $user;
     }
 
-    public function test_permissions_are_visible()
+    public function test_permissions_routes_are_protected_from_unauthorized_access()
     {
-        $this->withoutAuthorization();
+        $this->get('/permissions')->assertStatus(302)->assertRedirect('/login');
 
-        $user = User::factory()->create();
-        $response = $this->actingAs($user)->get('/permissions');
-        $response->assertStatus(200);
+        $this->loginAsAdmin()->assertRedirect('/permissions');
+        $this->get('/permissions')->assertStatus(200);
     }
 
-    public function test_permission_create()
+    public function test_a_permission_can_be_created()
     {
-        $this->withoutAuthorization();
+        $this->withOutExceptionHandling();
+        $this->loginAsAdmin()->assertRedirect('/dashboard');
 
-        $user = User::factory()->create();
         $newData = [
             'title' => 'Test_perm'
         ];
-        $response = $this->actingAs($user)->post('/permissions', $newData);
-        $response->assertRedirect('/permissions');
+
+        $this->from('/permissions')->post('/permissions', $newData)->assertRedirect('/permissions');
     }
 
-    public function test_permission_update_successful()
+    public function test_a_permission_can_be_updated()
     {
-        $this->withoutAuthorization();
+        $this->withOutExceptionHandling();
+        $this->loginAsAdmin()->assertRedirect('/dashboard');
 
-        $user = User::factory()->create();
         $newData = [
             'title' => 'Test_perm'
         ];
-        $response = $this->actingAs($user)->post('/permissions', $newData);
 
+        $this->from('/permissions')->post('/permissions', $newData)->assertRedirect('/permissions');
         $perm = Permission::where('title', 'Test_perm')->first();
         $this->assertNotNull($perm);
 
@@ -67,30 +64,25 @@ class PermissionsTest extends TestCase
             'title' => 'New_title'
         ];
 
-        $this->actingAs($user)->get('/permissions/'.$perm->id.'/edit/')->assertStatus(200);
-
-        $response = $this->actingAs($user)->put('/permissions/'.$perm->id, $testData);
+        $this->get('/permissions/'.$perm->id.'/edit/')->assertStatus(200);
+        $this->from('/permissions')->put('/permissions/'.$perm->id, $testData)->assertRedirect('/permissions');
         $this->assertDatabaseHas('permissions', $testData);
-        $perm1 = Permission::where('title', 'New_title')->first();
-        $this->assertNotNull($perm1);
-        $response->assertRedirect('/permissions');
+        $this->assertNotNull(Permission::where('title', 'New_title')->first());
     }
 
-    public function test_permission_delete_successful()
+    public function test_a_permission_can_be_deleted()
     {
-        $this->withoutAuthorization();
+        $this->withOutExceptionHandling();
+        $this->loginAsAdmin()->assertRedirect('/dashboard');
 
-        $user = User::factory()->create();
         $newData = [
             'title' => 'Test_perm'
         ];
-        $this->actingAs($user)->post('/permissions', $newData);
 
+        $this->from('/permissions')->post('/permissions', $newData)->assertRedirect('/permissions');
         $perm = Permission::where('title', 'Test_perm')->first();
         $this->assertNotNull($perm);
-
-        $this->actingAs($user)->delete('/permissions/'.$perm->id);
-        $perm = Permission::where('title', 'Test_perm')->first();
-        $this->assertNull($perm);
+        $this->from('/permissions')->delete('/permissions/'.$perm->id)->assertRedirect('/permissions');
+        $this->assertNull(Permission::where('title', 'Test_perm')->first());
     }
 }

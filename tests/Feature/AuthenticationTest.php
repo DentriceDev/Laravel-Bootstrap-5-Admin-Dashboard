@@ -7,16 +7,30 @@ use App\Models\User;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
-    // use WithoutMiddleware; // should not be used when testing with middleware with has $errors variable
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->artisan('db:seed');
+    }
+
+    protected function loginAsAdmin()
+    {
+        $user = $this->from('/login')->post('/login', [
+            'email' => 'admin@dentricedev.com',
+            'password' => '1234',
+        ]);
+
+        return $user;
+    }
 
     public function withoutAuthorization()
     {
@@ -27,95 +41,87 @@ class AuthenticationTest extends TestCase
         return $this;
     }
 
-    public function test_profile_routes_are_protected_from_public()
+    public function test_profile_routes_are_protected_from_unauthorized_access()
     {
-        $response = $this->get('/user/account');
-        $response->assertStatus(302);
-        $response->assertRedirect('/login');
+        $this->get('/user/account')->assertStatus(302)->assertRedirect('/login');
+        $this->withOutExceptionHandling();
 
-        $user = User::factory()->create();
-        $response = $this->actingAs($user)->get('/dashboard');
-        $response->assertOk();
+        $this->loginAsAdmin()->assertRedirect('/user/account');
+        $this->get('/dashboard')->assertOk();
     }
 
-    public function test_profile_fields_are_visible()
+    public function test_profile_fields_are_visible_to_authorized_users()
     {
-        $this->withoutAuthorization();
+        $this->loginAsAdmin()->assertRedirect('/dashboard');
+        $this->withOutExceptionHandling();
 
-        $user = User::factory()->create();
-        $response = $this->actingAs($user)->post('/password/confirm', [
-            'password' => 'password',
+        $this->post('/password/confirm', [
+            'password' => '1234',
         ]);
-        $response = $this->actingAs($user)->get('/user/account');
-        $this->assertStringContainsString('value="'.$user->name.'"', $response->getContent());
-        $this->assertStringContainsString('value="'.$user->email.'"', $response->getContent());
+
+        $this->assertStringContainsString('value="Admin"', $this->get('/user/account')->getContent());
+        $this->assertStringContainsString('value="admin@dentricedev.com"', $this->get('/user/account')->getContent());
     }
 
-    public function test_profile_password_update_successful()
+    public function test_profile_password_can_be_updated()
     {
-        $this->withoutAuthorization();
+        $this->loginAsAdmin()->assertRedirect('/dashboard');
+        $this->withOutExceptionHandling();
 
-        $user = User::factory()->create([
-            'password' => Hash::make('password'),
-        ]);
         $newData = [
             'password' => 'newpassword',
             'password_confirmation' => 'newpassword',
         ];
-        $this->actingAs($user)->post('/password/confirm', [
-            'password' => 'password',
+        $this->post('/password/confirm', [
+            'password' => '1234',
         ]);
-        $this->actingAs($user)->post('/user/password', $newData);
+
+        $this->from('user/account')->post('/user/password', $newData)->assertRedirect('/user/account');
 
         //Check if the user is able to log in with the new password
         $this->assertTrue(Auth::attempt([
-            'email' => $user->email,
+            'email' => 'admin@dentricedev.com',
             'password' => 'newpassword'
         ]));
     }
 
-    public function test_profile_name_and_email_update_successful()
+    public function test_profile_name_and_email_can_be_updated()
     {
-        $this->withoutAuthorization();
+        $this->loginAsAdmin()->assertRedirect('/dashboard');
         $this->withOutExceptionHandling();
 
-        $user = User::factory()->create([
-            'password' => Hash::make('password'),
-        ]);
         $newData = [
             'name' => 'New name',
             'email' => 'new@email.com',
         ];
-        $this->actingAs($user)->post('/password/confirm', [
-            'password' => 'password',
-        ]);
-        $this->actingAs($user)->post('/user/profile', $newData);
+        $this->post('/password/confirm', [
+            'password' => '1234',
+        ])->assertRedirect('/dashboard');
+        $this->post('/user/profile', $newData);
         $this->assertDatabaseHas('users', $newData);
 
         // Check if the user is still able to log in - password unchanged
         $this->assertTrue(Auth::attempt([
-            'email' => $user->email,
-            'password' => 'password'
+            'email' => 'new@email.com',
+            'password' => '1234'
         ]));
     }
 
-    public function test_user_can_register()
+    public function test_a_user_can_register()
     {
-        $this->withoutAuthorization();
+        $this->withOutExceptionHandling();
 
         $newData = [
             'name' => 'New name',
-            'email' => 'new1@email.com',
+            'email' => 'new@email.com',
             'password' => 'newpassword',
             'password_confirmation' => 'newpassword'
         ];
-        $response = $this->post('/register', $newData);
-        $response->assertRedirect('/dashboard');
+        $this->post('/register', $newData)->assertRedirect('/dashboard');
     }
 
     public function test_must_verify_email()
     {
-        $this->withoutAuthorization();
         $user = User::factory()->create([
             'email_verified_at' => null,
         ]);
@@ -142,11 +148,10 @@ class AuthenticationTest extends TestCase
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
 
-        $response = $this->actingAs($user)->post('/password/confirm', [
+        $this->actingAs($user)->post('/password/confirm', [
             'password' => 'password',
         ]);
-        $response = $this->get('/user/account');
-        $response->assertOk();
+        $this->get('/user/account')->assertOk();
     }
 
     public function test_password_confirmation_page()
@@ -155,15 +160,11 @@ class AuthenticationTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->get('/user/account');
-        $response->assertRedirect('/password/confirm');
+        $this->actingAs($user)->get('/user/account')->assertRedirect('/password/confirm');
 
-        $response = $this->actingAs($user)->post('/password/confirm', [
+        $this->actingAs($user)->post('/password/confirm', [
             'password' => 'password',
-        ]);
-
-        $response->assertRedirect();
-        $response->assertSessionHasNoErrors();
+        ])->assertRedirect()->assertSessionHasNoErrors();
     }
 
     // public function test_password_at_least_one_uppercase_lowercase_letter()

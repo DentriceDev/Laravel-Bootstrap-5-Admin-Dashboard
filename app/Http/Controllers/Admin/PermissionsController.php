@@ -7,7 +7,7 @@ use App\Http\Requests\MassDestroyPermissionRequest;
 use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
 use App\Models\Permission;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 class PermissionsController extends Controller
@@ -16,9 +16,7 @@ class PermissionsController extends Controller
     {
         abort_if(Gate::denies('permission_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $permissions = Permission::all();
-
-        return view('admin.permissions.index', compact('permissions'));
+        return view('admin.permissions.index');
     }
 
     public function create()
@@ -30,7 +28,7 @@ class PermissionsController extends Controller
 
     public function store(StorePermissionRequest $request)
     {
-        $permission = Permission::create($request->all());
+        Permission::create($request->all());
 
         return redirect()->route('permissions.index')->with('message', __('global.create_permission_success'));
     }

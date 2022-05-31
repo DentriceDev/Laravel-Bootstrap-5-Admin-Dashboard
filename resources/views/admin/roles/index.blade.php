@@ -1,17 +1,13 @@
 @extends('layouts.admin')
 @section('content')
-@can('role_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('roles.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.role.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.role.title_singular') }} {{ trans('global.list') }}
+        @can('role_create')
+        <a class="btn btn-primary float-end" href="{{ route('roles.create') }}">
+            {{ trans('global.add') }} {{ trans('cruds.role.title_singular') }}
+        </a>
+        @endcan
     </div>
 
     <div class="card-body">

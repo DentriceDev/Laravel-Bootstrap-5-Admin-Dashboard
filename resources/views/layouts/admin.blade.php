@@ -14,15 +14,19 @@
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- CSS Files -->
   <link href="{{ asset('css/dentrice-dashboard.min.css') }}" rel="stylesheet" />
-
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/css/perfect-scrollbar.min.css" rel="stylesheet" />
   @livewireStyles
   @powerGridStyles
 </head>
+<style>
+    .bg-wh{
+        background-color: #ebfcff;
+    }
+</style>
 
-<body class="g-sidenav-show bg-gray-100">
+<body class="g-sidenav-show bg-wh">
 
     @include('partials.auth.menu')
     @include('partials.auth.nav')
@@ -41,7 +45,6 @@
                 </script>,
                 made with <i class="fa fa-heart"></i> by
                 <a href="https://www.dentricedev.com/dev" class="font-weight-bold" target="_blank">DentriceDev Tim</a>
-                for a better web.
               </div>
             </div>
             <div class="col-lg-6">
@@ -54,9 +57,6 @@
                 </li>
                 <li class="nav-item">
                   <a href="https://dentricedev.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.dentricedev.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
                 </li>
               </ul>
             </div>
@@ -73,17 +73,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
   <!-- Plugin for the charts, full documentation here: https://www.chartjs.org/ -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.0.2/chart.min.js"></script>
-  {{-- <script src="{{ asset('js/Chart.extension.js') }}"></script> --}}
-
   <!-- Control Center for Dashboard: parallax effects -->
   <script src="{{ asset('js/dentrice-dashboard.min.js') }}"></script>
-
-  {{-- <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js"></script> --}}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-  {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script> --}}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
   <script src="{{ asset('js/main.js') }}"></script>
 

@@ -38,3 +38,5 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'namespace' => 'Auth', 'middl
         Route::post('account/destroy', 'ManageAccountController@destroy')->name('account.destroyProfile');
     }
 });
+
+Route::post('notifications', 'App\Http\Controllers\NotificationsController@markNoticicationsAsRead')->name('notifications.markAsRead');

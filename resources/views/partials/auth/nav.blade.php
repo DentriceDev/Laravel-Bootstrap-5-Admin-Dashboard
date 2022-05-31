@@ -15,12 +15,6 @@
             </nav>
 
             <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4 d-flex justify-content-end" id="navbar">
-                <div class="ms-md-3 pe-md-3 d-flex align-items-center">
-                    <div class="input-group">
-                        <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                        <input type="text" class="form-control" placeholder="Type here...">
-                    </div>
-                </div>
 
                 <ul class="navbar-nav justify-content-end">
                     <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
@@ -33,7 +27,9 @@
                         </a>
                     </li>
 
-                    <li class="nav-item dropdown pe-2 d-flex align-items-center">
+                    @livewire('notifications-menu')
+
+                    <li class="nav-item dropdown ps-4 pe-2 d-flex align-items-center">
                         <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa-fw fas fa-user fa-lg c-sidebar-nav-icon"></i>
                         </a>

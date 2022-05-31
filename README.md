@@ -1,4 +1,4 @@
-# Laravel Bootstrap 5 Admin Dashboard
+# Laravel 9.X Bootstrap 5 Admin Dashboard
 - Adminpanel based on Soft UI theme from [Creative Tim](https://www.creative-tim.com/product/soft-ui-dashboard)
 
 ### What's inside:

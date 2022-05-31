@@ -39,4 +39,4 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'namespace' => 'Auth', 'middl
     }
 });
 
-Route::post('notifications', 'App\Http\Controllers\NotificationsController@markNoticicationsAsRead')->name('notifications.markAsRead');
+Route::post('notifications', '\App\Http\Livewire\NotificationsMenu@markNoticicationsAsRead')->name('notifications.markAsRead');

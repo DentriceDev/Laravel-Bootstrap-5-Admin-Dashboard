@@ -10,7 +10,6 @@
         </i>
     </a>
     <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton" style="max-height: 400px;overflow-y: auto;">
-        @if(file_exists(app_path('Http/Controllers/NotificationsController.php')))
 
         <div class="col-sm-12">
             <p class="dropdown-item">Notifications
@@ -34,7 +33,6 @@
         </li>
 
         @endforelse
-        @endif
     </ul>
 </li>
 @section('scripts')
@@ -55,6 +53,7 @@
 
             request.done(() => {
                 $(this).parents('li.p-2').remove();
+                Livewire.emit('refreshNotifications');
             });
         });
 
@@ -63,6 +62,7 @@
 
             request.done(() => {
                 $('li.p-2').remove();
+                Livewire.emit('refreshNotifications');
             });
         });
     })

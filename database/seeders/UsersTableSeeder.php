@@ -13,7 +13,7 @@ class UsersTableSeeder extends Seeder
             [
                 'id'                 => 1,
                 'name'               => 'Admin',
-                'email'              => 'admin@dentricedev.com',
+                'email'              => 'admin@admin.com',
                 'email_verified_at' => now(),
                 'password'           => bcrypt('1234'),
                 'remember_token'     => null,

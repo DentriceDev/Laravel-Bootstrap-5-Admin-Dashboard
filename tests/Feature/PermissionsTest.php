@@ -20,7 +20,7 @@ class PermissionsTest extends TestCase
     protected function loginAsAdmin()
     {
         $user = $this->from('/login')->post('/login', [
-            'email' => 'admin@dentricedev.com',
+            'email' => 'admin@admin.com',
             'password' => '1234',
         ]);
 

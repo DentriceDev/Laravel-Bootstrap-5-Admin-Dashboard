@@ -25,7 +25,7 @@ class AuthenticationTest extends TestCase
     protected function loginAsAdmin()
     {
         $user = $this->from('/login')->post('/login', [
-            'email' => 'admin@dentricedev.com',
+            'email' => 'admin@admin.com',
             'password' => '1234',
         ]);
 
@@ -60,7 +60,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertStringContainsString('value="Admin"', $this->get('/user/account')->getContent());
-        $this->assertStringContainsString('value="admin@dentricedev.com"', $this->get('/user/account')->getContent());
+        $this->assertStringContainsString('value="admin@admin.com"', $this->get('/user/account')->getContent());
     }
 
     public function test_profile_password_can_be_updated()
@@ -80,7 +80,7 @@ class AuthenticationTest extends TestCase
 
         //Check if the user is able to log in with the new password
         $this->assertTrue(Auth::attempt([
-            'email' => 'admin@dentricedev.com',
+            'email' => 'admin@admin.com',
             'password' => 'newpassword'
         ]));
     }

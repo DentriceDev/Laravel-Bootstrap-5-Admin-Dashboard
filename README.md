@@ -25,7 +25,7 @@
 - Run __php artisan key:generate__
 - Run __php artisan migrate --seed__ (it has some seeded data for your testing)
 - That's it: launch the main URL.
-- You can login to adminpanel with default credentials __admin@dentricedev.com__ - __1234__
+- You can login to adminpanel with default credentials __admin@admin.com__ - __1234__
 
 
 <!-- Actual text -->
